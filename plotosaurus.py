@@ -45,7 +45,11 @@ for i in range(num_plots):
     plots[i].setClipToView(True)
     data = np.random.normal(size=200)
     for j in range(3):
-        curves.append(plots[i].plot(data, pen=pg.mkPen(color=pg.intColor(j, hues=5, alpha=255, width=3))))
+        x = plots[i].plot(data, pen=pg.mkPen(color=pg.intColor(j, hues=5, alpha=255, width=3)))
+        x.setRange(yRange=[-1, 1])
+        x.setLimits(yMin=-1, yMax=1)
+        curves.append(x)
+
 
 d1.addWidget(plotwidget)
 
