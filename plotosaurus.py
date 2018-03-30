@@ -56,33 +56,46 @@ def log_and_print(state):
     logging = state
     log_file_name = datetime.datetime.now().strftime('log_%Y-%m-%d_%H-%M-%S.txt')
 
+please_center = False
+def median_centering():
+    global please_center
+    please_center = True
+
 setwidget = pg.LayoutWidget()
 logging_toggler = QtGui.QCheckBox('Logging')
 logging_toggler.stateChanged.connect(log_and_print)
+zero_button = QtGui.QPushButton('Center Traces')
+zero_button.clicked.connect(median_centering)
 
 setwidget.addWidget(logging_toggler)
+setwidget.addWidget(zero_button)
 d2.addWidget(setwidget)
 
+centering = None
 current_data_view = None
 def update():
-    global current_data_view, logging, log_file_name
+    global current_data_view, logging, log_file_name, centering, please_center
     if demo:
         data = np.random.random((16, 15))
     else:
         ts, data = dev.read()
         if data is None:
             return
+    if please_center:
+        please_center = False
+        centering = np.median(data, axis=0)
+    if current_data_view is None:
+        current_data_view = data
+        centering = np.median(data, axis=0)
+    elif current_data_view.shape[0] < 1000:
+        current_data_view = np.vstack((current_data_view, data - centering))
+    else:
+        current_data_view = np.roll(current_data_view, -data.shape[0], axis=0)
+        current_data_view[-data.shape[0]:,:] = data - centering
     if logging:
         print(data[-1,:])
         with open(log_file_name, 'ab') as f:
             np.savetxt(f, data, fmt='%10.5f', delimiter=',')
-    if current_data_view is None:
-        current_data_view = data
-    elif current_data_view.shape[0] < 1000:
-        current_data_view = np.vstack((current_data_view, data))
-    else:
-        current_data_view = np.roll(current_data_view, -data.shape[0], axis=0)
-        current_data_view[-data.shape[0]:,:] = data
     for counter, c in enumerate(curves):
         c.setData(y=current_data_view[:, counter])
 
