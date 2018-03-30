@@ -43,7 +43,7 @@ for i in range(num_plots):
     plots.append(plotwidget.addPlot())
     #plots[i].setDownsampling(mode='peak')
     plots[i].setClipToView(True)
-    plots[i].setRange(yRange=[-2, 2])
+    plots[i].setRange(yRange=[-1, 1])
     data = np.random.normal(size=200)
     for j in range(3):
         curves.append(plots[i].plot(data, pen=pg.mkPen(color=pg.intColor(j, hues=5, alpha=255, width=3))))
