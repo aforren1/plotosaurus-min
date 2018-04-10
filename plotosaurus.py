@@ -113,10 +113,11 @@ def update():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('demo', help='Demo mode or not',
-                        type=bool, default=True)
+    parser.add_argument('--demo', help='Demo mode or not',
+                        type=bool, default=False)
     args = parser.parse_args()
-    if args.demo:
+    print(args)
+    if False:
         device = MpI(FakeInput, sampling_frequency=1000,
                      data_shape=[[15]], data_type=[ctypes.c_double])
     else:
