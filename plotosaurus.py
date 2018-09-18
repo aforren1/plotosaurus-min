@@ -10,7 +10,7 @@ from pyqtgraph.Qt import QtCore, QtGui
 
 from toon.input import MultiprocessInput as MpI
 from toon.input.fake import FakeInput
-from toon.input.hand import Hand
+from calib_hand import Hand
 
 np.set_printoptions(precision=4, linewidth=150, suppress=True)
 
@@ -35,8 +35,8 @@ curves = list()
 
 for i in range(num_plots):
     plots.append(plotwidget.addPlot())
-    plots[i].setClipToView(True)
-    plots[i].setRange(yRange=[-1, 1])
+    # plots[i].setClipToView(True)
+    #plots[i].setRange(yRange=[-1, 1])
     data = np.random.normal(size=200)
     for j in range(3):
         curves.append(plots[i].plot(data, pen=pg.mkPen(
@@ -47,6 +47,7 @@ d1.addWidget(plotwidget)
 logging = False
 log_file_name = ''
 
+
 def stop_logging():
     global logging
     logging = False
@@ -55,6 +56,7 @@ def stop_logging():
 
 timer = QtCore.QTimer()
 
+
 def log_and_print():
     global logging, log_file_name
     logging = True
@@ -62,6 +64,7 @@ def log_and_print():
     ) + datetime.datetime.now().strftime('_%Y-%m-%d_%H-%M-%S') + '.txt'
     logging_toggler.setText('Now logging')
     timer.singleShot(5000, stop_logging)
+
 
 please_center = False
 
@@ -89,7 +92,7 @@ current_data_view = None
 
 def update():
     global current_data_view, logging, log_file_name, centering, please_center
-    ts, data = dev.read()
+    ts, data = device.read()
     if data is None:
         return
     if please_center:
@@ -121,12 +124,18 @@ if __name__ == '__main__':
         device = MpI(FakeInput, sampling_frequency=1000,
                      data_shape=[[15]], data_type=[ctypes.c_double])
     else:
-        device = MpI(Hand)
+        device = MpI(Hand,
+                     calibration_files=['calibs/cal_mat_18.mat',  # thumb
+                                        'calibs/cal_mat_14.mat',
+                                        'calibs/cal_mat_17.mat',
+                                        'calibs/cal_mat_13.mat',
+                                        'calibs/cal_mat_15.mat'])
 
-    with device as dev:
-        win.show()
-        timer = pg.QtCore.QTimer()
-        timer.timeout.connect(update)
-        timer.start(17)
-        if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
-            QtGui.QApplication.instance().exec_()
+    device.start()
+    win.show()
+    timer = pg.QtCore.QTimer()
+    timer.timeout.connect(update)
+    timer.start(17)
+    if (sys.flags.interactive != 1) or not hasattr(QtCore, 'PYQT_VERSION'):
+        QtGui.QApplication.instance().exec_()
+    device.stop()
