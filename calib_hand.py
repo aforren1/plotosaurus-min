@@ -57,7 +57,9 @@ class Hand(BaseInput):
             # apply calibration
             n = 0
             # for each finger, apply calibration
-            for i, val in enumerate(self.calib_matrices):
+            for val in self.calib_matrices:
                 self._calib_buffer[0+n:3+n] = np.dot(val, self._data_buffer[0+n:3+n])
                 n += 3
+            # convert calib_buffer to kg
+            self._calib_buffer /= 1000.0
             return (time, self._calib_buffer)
