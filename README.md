@@ -1,7 +1,7 @@
 
 First time:
 
-1. `git clone https://github.com/aforren1/plotosaurus-min`
+1. `git clone https://github.com/aforren1/plotosaurus-min` (or download the zip from github)
 2. `cd plotosaurus-min`
 3. `pip install -r requirements.txt`
 

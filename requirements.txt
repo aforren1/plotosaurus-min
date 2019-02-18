@@ -2,3 +2,4 @@ numpy
 pyqtgraph
 PyQt5
 toon>=0.12.4
+hidapi
