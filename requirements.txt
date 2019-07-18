@@ -1,5 +1,5 @@
 numpy
 pyqtgraph
 PyQt5
-toon>=0.12.4
+toon>=0.12.6
 hidapi

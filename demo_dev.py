@@ -6,7 +6,7 @@ import numpy as np
 
 class SingleResp(BaseDevice):
     t0 = default_timer()
-    sampling_frequency = 1000
+    sampling_frequency = 100
     counter = 0
 
     Num1 = make_obs('Num1', (15,), ctypes.c_double)
@@ -18,4 +18,4 @@ class SingleResp(BaseDevice):
         self.counter += 1
         self.t0 = default_timer()
         t = self.clock()
-        return self.Num1(t, np.random.random(self.Num1.shape))
+        return self.Num1(t, np.random.random(self.Num1.shape) - 0.5)
