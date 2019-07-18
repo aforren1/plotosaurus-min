@@ -13,3 +13,5 @@ python plotosaurus.py
 ```
 
 Add a `--demo` flag to run a device-free demo.
+
+Note that there aren't any wheels for PyQt5 under Python 2.7.x, so Python 3.5+ is preferred.
